@@ -1,7 +1,7 @@
 # Crypto
 
 
-This Extension exposes Node.JS's crypto functions to Cognigy.AI
+This Extension exposes Node.JS's crypto functions to Cognigy.AI with eesys modifications to support IV for AES.
 
 ## Node: createHash
 
