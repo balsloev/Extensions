@@ -6,6 +6,7 @@ export interface IDecrypt extends INodeFunctionBaseParams {
 		algorithm: string;
 		text: string;
 		key: string;
+		iv: string;
 		storeDecrypt: string;
 		inputKey: string;
 		contextKey: string;
@@ -20,7 +21,7 @@ export const decryptNode = createNodeDescriptor({
 			key: "algorithm",
 			label: "Decrypts text using a given algorithm",
 			type: "select",
-			defaultValue: "CAST-cbc",
+			defaultValue: "aes-256-cbc",
 			params: {
 				required: true,
 				options: [
@@ -482,6 +483,15 @@ export const decryptNode = createNodeDescriptor({
 			}
 		},
 		{
+            key: "iv",
+            label: "The IV to use",
+            type: "cognigyText",
+            defaultValue: "0000000000000000",
+            params: {
+                required: false
+            }
+        },
+		{
 			key: "storeDecrypt",
 			type: "select",
 			label: "Where to store the result",
@@ -537,6 +547,7 @@ export const decryptNode = createNodeDescriptor({
 		{ type: "field", key: "algorithm" },
 		{ type: "field", key: "text" },
 		{ type: "field", key: "key" },
+		{ type: "field", key: "iv" },
 		{ type: "section", key: "storageOption" },
 	],
 	appearance: {
@@ -545,7 +556,7 @@ export const decryptNode = createNodeDescriptor({
 
 	function: async ({ cognigy, config }: IDecrypt) => {
 		const { api } = cognigy;
-		const { algorithm, text, key, storeDecrypt, inputKey, contextKey } = config;
+		const { algorithm, text, key, iv, storeDecrypt, inputKey, contextKey } = config;
 		let result = {};
 
 		if (!text) result = Promise.reject("No text defined.");
@@ -554,7 +565,8 @@ export const decryptNode = createNodeDescriptor({
 
 
 		try {
-			const decipher = crypto.createDecipher(algorithm, key);
+			const decipher = crypto.createDecipheriv(algorithm, key, iv);
+
 			let decrypted = decipher.update(text, 'hex', 'utf8');
 			decrypted += decipher.final('utf8');
 			result = { "result": decrypted };

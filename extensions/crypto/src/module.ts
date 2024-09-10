@@ -14,6 +14,6 @@ export default createExtension({
 	],
 
 	options: {
-		label: "Crypto"
+		label: "eesyCrypto"
 	}
 });
