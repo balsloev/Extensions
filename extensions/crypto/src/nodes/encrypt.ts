@@ -564,6 +564,7 @@ export const encryptNode = createNodeDescriptor({
 		if (!algorithm) result = Promise.reject("No algorithm defined.");
 
 		try {
+			// Create a cipher object with the specified algorithm
 			const cipher = crypto.createCipheriv(algorithm, key, iv);
 
 			let crypted = cipher.update(text, 'utf8', 'hex');
